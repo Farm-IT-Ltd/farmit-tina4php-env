@@ -7,13 +7,6 @@
 
 (new \Tina4\Env());
 
-//Initialize the Error handling
-
-if (defined("TINA4_DEBUG_LEVEL"))
-{
-    \Tina4\Debug::$logLevel = TINA4_DEBUG_LEVEL;
-}
-
 //We only want to fiddle with the defaults if we are developing
 if (defined("TINA4_DEBUG") && TINA4_DEBUG) {
     set_exception_handler("tina4_exception_handler");

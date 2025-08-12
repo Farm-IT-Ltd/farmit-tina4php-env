@@ -45,7 +45,6 @@ class Env
         }
         $variables = explode("=", $line, 2);
         if (isset($variables[0], $variables[1]) && !defined(trim($variables[0]))) {
-            Debug::message("Defining {$variables[0]} = $variables[1]", TINA4_LOG_DEBUG);
             $variable = trim($variables[0]);
 
             if (count($variables) > 0 && trim($variables[1]) === "false" || trim($variables[1]) === "true" || trim($variables[1])[0] === "[" || trim($variables[1])[0] === "\"" || trim($variables[1])[0] === '"' || trim($variables[1])[0] === '"')
@@ -83,7 +82,6 @@ class Env
         }
 
         if (file_exists($fileName)) {
-            Debug::message("Parsing {$fileName}", TINA4_LOG_DEBUG);
             $fileContents = file_get_contents($fileName);
             if (strpos($fileContents, "\r")) {
                 $fileContents = explode("\r\n", $fileContents);
@@ -94,8 +92,6 @@ class Env
             foreach ($fileContents as $id => $line) {
                 $this->parseLine($line);
             }
-        } else {
-            Debug::message("$fileName does not exist, please create one!");
         }
     }
 }
