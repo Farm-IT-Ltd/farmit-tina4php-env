@@ -47,11 +47,16 @@ class Env
         if (isset($variables[0], $variables[1]) && !defined(trim($variables[0]))) {
             $variable = trim($variables[0]);
 
-            if (count($variables) > 0 && trim($variables[1]) === "false" || trim($variables[1]) === "true" || trim($variables[1])[0] === "[" || trim($variables[1])[0] === "\"" || trim($variables[1])[0] === '"' || trim($variables[1])[0] === '"')
-            {
-                eval("\${$variable} = {$variables[1]};");
+            if (isset($variables[1]) && is_string($variables[1])) {
+                $trimmed = trim($variables[1]);
+                if ((count($variables) > 0 && $trimmed === "false") || $trimmed === "true" ||
+                    ($trimmed !== '' && ($trimmed[0] === '[' || $trimmed[0] === '"' || $trimmed[0] === '\''))) {
+                    eval("\${$variable} = {$trimmed};");
+                } else {
+                    extract([$variable => $trimmed], EXTR_OVERWRITE);
+                }
             } else {
-                extract([$variable => trim($variables[1])], EXTR_OVERWRITE);
+                extract([$variable => ''], EXTR_OVERWRITE); // Fallback to empty string
             }
 
             $_ENV[trim($variables[0])] = ${$variable};
