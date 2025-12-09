@@ -44,26 +44,38 @@ class Env
             return;
         }
         $variables = explode("=", $line, 2);
-        if (isset($variables[0], $variables[1]) && !defined(trim($variables[0]))) {
-            $variable = trim($variables[0]);
-
-            if (isset($variables[1]) && is_string($variables[1])) {
-                $trimmed = trim($variables[1]);
-                if ((count($variables) > 0 && $trimmed === "false") || $trimmed === "true" ||
-                    ($trimmed !== '' && ($trimmed[0] === '[' || $trimmed[0] === '"' || $trimmed[0] === '\''))) {
-                    eval("\${$variable} = {$trimmed};");
-                } else {
-                    extract([$variable => $trimmed], EXTR_OVERWRITE);
+        if (isset($variables[0], $variables[1])) {
+            $key = trim($variables[0]);
+            $osValue = getenv($key);
+            if ($osValue !== false) {
+                $_ENV[$key] = $osValue;
+                if (!defined($key)) {
+                    define($key, $osValue);
                 }
-            } else {
-                extract([$variable => ''], EXTR_OVERWRITE); // Fallback to empty string
+                return;
             }
+            if (!defined($key)) {
+                $variable = $key;
 
-            $_ENV[trim($variables[0])] = ${$variable};
-            define(trim($variables[0]), ${$variable});
+                if (isset($variables[1]) && is_string($variables[1])) {
+                    $trimmed = trim($variables[1]);
+                    if ((count($variables) > 0 && $trimmed === "false") || $trimmed === "true" ||
+                        ($trimmed !== '' && ($trimmed[0] === '[' || $trimmed[0] === '"' || $trimmed[0] === '\''))) {
+                        $code = "try {\n    \${$variable} = {$trimmed};\n} catch(\\Exception \$e) {\n    //Could not set.\n}";
+                        if (false === @eval($code)) {
+                           extract([$variable => $trimmed], EXTR_OVERWRITE);
+                        }
+                    } else {
+                        extract([$variable => $trimmed], EXTR_OVERWRITE);
+                    }
+                } else {
+                    extract([$variable => ''], EXTR_OVERWRITE); // Fallback to empty string
+                }
+
+                $_ENV[$key] = ${$variable};
+                define($key, ${$variable});
+            }
         }
-
-
     }
 
     /**
