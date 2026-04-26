@@ -1,5 +1,5 @@
 {
-    "name": "farmit/tina4php-env",
+    "name": "tina4stack/tina4php-env",
     "description": "Tina4 PHP Environment Functionality",
     "license": "MIT",
     "autoload": {
