@@ -4,8 +4,7 @@
     "license": "MIT",
     "autoload": {
         "files": [
-            "Tina4/Initialize.php",
-            "FarmIT/aliases.php"
+            "Tina4/Initialize.php"
         ],
         "classmap": [
             "Tina4/"
